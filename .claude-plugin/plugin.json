@@ -5,6 +5,7 @@
     "name": "Matheus Sancha"
   },
   "repository": "https://github.com/matheus-sancha/MS-Skills",
+  "license": "MIT",
   "keywords": ["skills", "engineering", "productivity", "flutter", "code-review"],
   "skills": [
     "./skills/engineering/codebase-design",

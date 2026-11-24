@@ -159,3 +159,9 @@ MS-Skills/
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add or improve skills.
+
+## License
+
+[MIT](./LICENSE) for the skills authored here. Skills under `skills/vendor/`
+remain under their upstream licenses — see
+[skills/vendor/README.md](./skills/vendor/README.md).
