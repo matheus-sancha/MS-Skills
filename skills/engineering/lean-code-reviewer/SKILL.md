@@ -1,7 +1,6 @@
 ---
 name: lean-code-reviewer
-description: Review the codebase and the project's domain model and architecture, and identify waste or redundancies and suggest improvements to make the codebase optimal and reduce token consumption.
-version: 1.0.0
+description: Hunt waste and redundancy across a whole codebase or module. Use when the user wants code made leaner or cheaper for an agent to read, or asks what can be deleted; to review a diff, use the `review-changes` skill instead.
 argument-hint: "Which area or module to focus on? (default: entire codebase)"
 ---
 
@@ -9,22 +8,22 @@ argument-hint: "Which area or module to focus on? (default: entire codebase)"
 
 A **lean** codebase carries no **waste**: every module earns its lines, every abstraction has at least two concrete use cases, and the surface a reader (or agent) must traverse to understand the system is as small as the problem allows.
 
-If the user passed an argument, scope the review to that area. Otherwise review the entire codebase.
+If the user passed an argument, scope the review to that area. Otherwise review the entire codebase, **hot spots first**: walk back a good stretch of history (`git log --name-only --oneline`) and start where churn concentrates — waste there is paid for on every change.
 
 ## Steps
 
-1. **Map the structure.** Read entry points, key types, and module boundaries. Build a mental model before hunting waste — you cannot see redundancy without first seeing structure. For module vocabulary (depth, seam, adapter, interface), use `/codebase-design`.
+1. **Map the structure.** Read entry points, key types, and module boundaries. Build a mental model before hunting waste — you cannot see redundancy without first seeing structure. Read `CONTEXT.md` and the ADRs covering the scope if they exist. For module vocabulary (depth, seam, adapter, interface), use the `codebase-design` skill.
    _Done when_: you can describe each module's interface and how it relates to the others.
 
 2. **Hunt waste.** Apply every category in [Waste Catalogue](#waste-catalogue) to every module in scope. For each instance record: location (file + line range), category, and a concrete improvement.
    _Done when_: every module examined against every category — no files skipped.
 
-3. **Report.** Group findings by category, ordered by impact (most tokens/complexity saved first). For each finding: location, what the waste is, and the specific change that removes it.
+3. **Report.** Group findings by category, ordered by impact (most tokens/complexity saved first). For each finding: location, what the waste is, and the specific change that removes it. A finding that conflicts with an ADR must say so — name the ADR and why the waste justifies reopening it — or be dropped.
 
 ## Waste Catalogue
 
 ### Shallow modules
-A module whose interface is nearly as complex as its implementation — the caller absorbs work the module should hide. Signs: many thin pass-through methods; parameters that repeat at every call site; logic that leaks into callers.
+A module whose interface is nearly as complex as its implementation — the caller absorbs work the module should hide. Signs: many thin pass-through methods; parameters that repeat at every call site; logic that leaks into callers. Confirm a suspect with the `codebase-design` skill's **deletion test**: if deleting it makes complexity vanish rather than reappear in its callers, it was waste.
 
 ### Duplication
 The same meaning in more than one place. Look for: copy-pasted blocks, parallel type hierarchies, functions that do the same thing under different names, constants defined twice.
@@ -33,7 +32,7 @@ The same meaning in more than one place. Look for: copy-pasted blocks, parallel 
 Exports, functions, types, or variables unreachable from any production path. Go beyond what the type-checker flags — follow call chains.
 
 ### Premature abstraction
-An interface, base class, or wrapper with exactly one implementation and no concrete variation expected. One adapter means a hypothetical seam; flag it.
+An interface, base class, or wrapper with exactly one implementation and no concrete variation expected — a hypothetical seam under the `codebase-design` skill's one-adapter rule.
 
 ### AI slop
 Code that was generated quickly without meaningful design — syntactically valid but semantically hollow. It passes review on a first read and silently degrades the codebase. Signs:

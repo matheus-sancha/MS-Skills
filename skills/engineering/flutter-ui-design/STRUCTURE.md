@@ -39,7 +39,7 @@ Navigation is **adaptive by breakpoint** — same destinations, different chrome
 |---|---|---|
 | **< 600 (compact / phone)** | `NavigationBar` (bottom) | 3–5 top destinations; thumb-reachable. Overflow → a "More" route, not a hamburger if avoidable. |
 | **600–1240 (medium / tablet, small desktop)** | `NavigationRail` | Icons + short labels at the side; frees vertical space. |
-| **> 1240 (expanded / desktop)** | Extended `NavigationRail` or persistent drawer | Labels always visible; supports denser info. Matches `flutter-desktop-app`'s home surface. |
+| **> 1240 (expanded / desktop)** | Extended `NavigationRail` or persistent drawer | Labels always visible; supports denser info. The usual chrome for a maximised desktop window. |
 
 Rules:
 

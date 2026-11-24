@@ -16,7 +16,7 @@ Two questions, in order. Most bad suites got the second right and the first wron
 
 In descending order of value:
 
-- **Invariants.** The conditions the domain says must always hold (`/domain-modeling`). These are the highest-value tests in any suite: they encode what the system refuses to allow, they're stated in the domain's own language, and they survive refactoring because they don't mention structure.
+- **Invariants.** The conditions the domain says must always hold (the `domain-modeling` skill). These are the highest-value tests in any suite: they encode what the system refuses to allow, they're stated in the domain's own language, and they survive refactoring because they don't mention structure.
 - **Decisions.** Branches that encode a judgement — pricing rules, permission checks, retry policy. If a human argued about it, test it.
 - **Bugs that actually happened.** A regression test is a claim about reality, not a guess about it. This is the one category where the test is justified by evidence rather than prediction.
 - **Contracts across a seam.** What callers on the other side are entitled to rely on.
@@ -32,7 +32,7 @@ Coverage of these inflates the number and lowers the suite's value. A suite that
 
 ## Choosing the seam
 
-**The interface is the test surface** (`/codebase-design`). Test a module through the interface its callers use — not past it, into the implementation. Wanting to reach past the interface is a design signal: usually the module is the wrong shape, or the thing you want to test deserves its own seam.
+**The interface is the test surface** (the `codebase-design` skill). Test a module through the interface its callers use — not past it, into the implementation. Wanting to reach past the interface is a design signal: usually the module is the wrong shape, or the thing you want to test deserves its own seam.
 
 For each candidate seam, ask what confidence it buys that a **cheaper** seam doesn't:
 
@@ -46,9 +46,24 @@ Push tests to the **cheapest seam that can still fail for the right reason**. Th
 
 A **correct seam** exercises the real pattern as it occurs at the call site. A seam that can only replicate a simplified version of the real usage gives false confidence — it goes green while the bug lives.
 
-When `/diagnosing-bugs` reaches Phase 5 and finds no correct seam for a regression test, that's the same problem arriving from the other direction: the architecture is preventing the bug from being locked down. Both cases resolve the same way — the missing seam is the finding. Create it (hand off to `/codebase-design`), or state plainly that the bug can't be regression-tested and why.
+When the `diagnosing-bugs` skill reaches Phase 5 and finds no correct seam for a regression test, that's the same problem arriving from the other direction: the architecture is preventing the bug from being locked down. Both cases resolve the same way — the missing seam is the finding. Create it (hand off to the `codebase-design` skill), or state plainly that the bug can't be regression-tested and why.
 
 Never write the test at a wrong seam to have written one. A green test that cannot fail for the right reason is worse than no test: it removes the pressure to build the seam that would work.
+
+## Tests that can fail
+
+A test earns its place only if a realistic defect turns it red.
+
+- **Name the break.** Before writing the body: which production change would make this test fail — and is that change a bug or a decision? A test that only breaks on decisions is coupling bought with no confidence.
+- **No tautologies.** Expected values come from an independent source of truth — a hand-worked literal, the spec — never recomputed the way the code computes them. `expect(cart.total, lines.fold(0, (s, l) => s + l.price))` agrees with the code by construction; `expect(cart.total, 4250)` can disagree with it.
+- **Mutation check.** Before finishing, mentally mutate the production code: flip a branch, change a constant, drop a side effect, return empty. Each realistic mutation should turn at least one test red; one that nothing catches marks unprotected behaviour, or a tautology.
+
+## Vertical slices
+
+One test → one implementation → repeat. Never all the tests, then all the code: tests written in bulk describe imagined behaviour and fix their structure before the implementation has taught you anything.
+
+- A new test that passes immediately is testing behaviour that already exists. Fix the test.
+- Red must be for the right reason — the feature is missing, not a typo or an unresolved import.
 
 ## Doubles
 
@@ -58,5 +73,7 @@ Prefer, in order:
 2. **A fake** — a working implementation with a shortcut, shared across tests. Written once, exercises the same interface as production.
 3. **A stub** returning canned values, for what you can't run.
 4. **A mock asserting on calls** — last resort. It asserts *how* the code works, which is the coupling you're trying not to buy. Reach for it only when the interaction itself is the behaviour under test, as with a retry policy.
+
+Whichever double, **mirror real data completely**: the whole structure as production returns it — every field of the JSON, every column of the row — not just what this test reads. A partial double stays green while the code reading the omitted field breaks.
 
 A test needing many doubles to stand up is reporting on the design: the module under test has too many dependencies, or its seam is in the wrong place.

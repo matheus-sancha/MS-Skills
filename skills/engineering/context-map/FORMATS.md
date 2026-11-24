@@ -26,8 +26,12 @@ vocabulary. Point at the directory; don't list its files.>
 
 ## Domain
 
-<The model from /domain-modeling: the concepts, their invariants, and the one
-name each goes by. Or a link, if it lives in its own file.>
+<Content owned by the domain-modeling skill. One entry per concept, or a link
+if the model lives in its own file.>
+
+**<Term>** (entity | value object) — <what it is, in a sentence or two>.
+_Avoid_: <aliases that must not be used for it>
+Invariants: <checkable conditions that always hold>
 
 ## Load-bearing
 

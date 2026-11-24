@@ -9,7 +9,7 @@ Two rules bind every entry:
 - **The repo overrides.** A documented repo standard always wins. Where it
   endorses something below, suppress the smell.
 - **Always a judgement call.** Label each as a possibility ("possible Feature
-  Envy"), never a hard violation. Skip anything tooling already enforces.
+  Envy"), never a hard violation.
 
 Match these against the diff, not the whole codebase. Each reads
 *what it is* → *how to fix*.

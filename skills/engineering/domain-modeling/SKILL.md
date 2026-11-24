@@ -9,7 +9,7 @@ Grilling surfaces **decisions**; this surfaces **nouns**. The output is a model:
 
 Work it like an interview — **one question at a time**, waiting for the answer before the next. Where a question can be answered by reading the code, read the code instead of asking.
 
-This skill stops at the model. Turning it into modules, interfaces, and seams is `/codebase-design`.
+This skill stops at the model. Turning it into modules, interfaces, and seams is the `codebase-design` skill.
 
 ## Vocabulary
 
@@ -39,10 +39,10 @@ This skill stops at the model. Turning it into modules, interfaces, and seams is
 4. **Map the relationships.** For each pair that relates: what's the cardinality, which side owns the reference, and can either side exist without the other? Lifecycle dependence is what reveals aggregates.
    _Done when_: every relationship has a cardinality and an owner.
 
-5. **Pin the invariants.** For each concept and each relationship, ask what must *always* be true. Then ask the sharper question: **what would it mean if this were violated?** An invariant nobody can describe the violation of isn't one.
-   _Done when_: every invariant is stated as a checkable condition, and each is assigned to the aggregate that can enforce it.
+5. **Pin the invariants.** For each concept and each relationship, ask what must *always* be true. Then ask the sharper question: **what would it mean if this were violated?** An invariant nobody can describe the violation of isn't one. **Cross-check every stated rule against the code**, and surface each contradiction as a question — "the code cancels whole orders; you said partial cancellation exists. Which is right?"
+   _Done when_: every invariant is stated as a checkable condition, assigned to the aggregate that can enforce it, and either agrees with the code or its contradiction has been put to the user.
 
-6. **Record it.** Write the model where the repo keeps such notes — if `CONTEXT.md` exists, its domain section belongs there (`/context-map` owns that file). State each concept, its classification, its relationships, and its invariants.
+6. **Record it.** Write the model into `CONTEXT.md`'s **Domain** section, or where the repo already keeps such notes. This skill owns that section's content and nothing else in the file — the module map around it, and the entry format, belong to the `context-map` skill. State each concept: its name, an `_Avoid_:` line listing the synonyms step 2 collapsed, its classification, its relationships, and its invariants.
    _Done when_: a reader who has never seen the conversation can use the model without asking what a word means.
 
 ## What good looks like

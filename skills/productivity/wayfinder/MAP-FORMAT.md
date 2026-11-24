@@ -57,6 +57,9 @@ Posted when the ticket is resolved, immediately before closing it.
 
 <the decision, stated so a later session can act on it without re-deriving it>
 
+<!-- AFK tickets only: the agent decided alone, so say what the human may overturn -->
+Ruling: <what was decided> — <why> — <what it costs if wrong>
+
 ## Assets
 
 <links to anything created while resolving — research notes, prototypes.

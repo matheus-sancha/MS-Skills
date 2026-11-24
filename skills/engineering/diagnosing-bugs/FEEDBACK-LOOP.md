@@ -1,19 +1,20 @@
 # Constructing a feedback loop
 
-Ten ways to get a signal that goes **red** on the bug, roughly in order of
+Ways to get a signal that goes **red** on the bug, roughly in order of
 preference. Take the first that fits — the list descends from cheapest and
 sharpest to most awkward.
 
-1. **Failing test** at whatever seam reaches the bug — unit, integration, e2e.
+1. **Failing test** at whatever seam reaches the bug — unit, integration, e2e. Flutter: `flutter test test/x_test.dart --plain-name "<case>"`.
 2. **Curl / HTTP script** against a running dev server.
 3. **CLI invocation** with a fixture input, diffing stdout against a known-good snapshot.
-4. **Headless browser script** (Playwright / Puppeteer) — drives the UI, asserts on DOM, console, or network.
+4. **Headless UI script** — drives the UI and asserts on what it shows. Web: Playwright / Puppeteer against DOM, console, or network. Flutter: a widget test (`pumpWidget`, `tester.tap`, `find`) when the widget tree is enough; `integration_test` (`flutter test integration_test/x_test.dart -d windows`) when the bug needs the real engine, plugins, or window.
 5. **Replay a captured trace.** Save a real request, payload, or event log to disk; replay it through the code path in isolation.
 6. **Throwaway harness.** A minimal subset of the system — one service, mocked deps — that hits the bug path in a single function call.
 7. **Property / fuzz loop.** For "sometimes wrong output", run 1000 random inputs and look for the failure mode.
 8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so `git bisect run` can drive it.
-9. **Differential loop.** Run the same input through old vs new (or two configs) and diff the outputs.
-10. **HITL harness.** Last resort — see below.
+9. **Pollution bisection.** For a test that fails only in the full suite, or stray state no test admits to leaving: pin the order (`flutter test --test-randomize-ordering-seed=<seed>`), then run the files before the victim in halves until one file is the polluter.
+10. **Differential loop.** Run the same input through old vs new (or two configs) and diff the outputs.
+11. **HITL harness.** Last resort — see below.
 
 ## Bugs that reproduce only sometimes
 
@@ -65,6 +66,8 @@ STEPS
   echo "captured -> $OUT/run-$RUN.txt  ($result)"
 done
 ```
+
+Runs as-is under Git Bash. In plain PowerShell keep the same shape: `Read-Host` for the verdict, `Get-Date -Format o` for the timestamp, `Get-Content $env:LOG -Tail 200` for the capture (skip it when `LOG` is unset — there is no `/dev/null`), `Set-Content` to write the run file.
 
 Fill in the steps precisely enough that two runs differ only by chance, never
 by what the human did. Point `LOG` at whatever the bug leaves traces in.

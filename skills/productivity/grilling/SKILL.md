@@ -1,17 +1,20 @@
 ---
-name: project-reviewer
-description: Interview the user relentlessly about a plan or design. Use when the user wants to stress-test a plan before building, or uses any 'grill' trigger phrases.
+name: grilling
+description: Relentless interview that stress-tests a plan or design. Use when the user wants a plan or design stress-tested before building, or asks to be grilled.
 ---
 
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one — depth-first, until the branch is exhausted. That is the default; see [Breadth-first mode](#breadth-first-mode) for the exception.
 
-If a question can be answered by exploring the codebase, explore the codebase instead. Only ask what the code cannot answer.
+Facts are your job, decisions are mine. When a question can be answered from the codebase or docs, dispatch a sub-agent to find it instead of asking. Don't block on it: only the questions downstream of that fact wait for the report — keep asking the rest.
 
 ## How to ask
 
 Ask **one question at a time**, waiting for the answer before continuing. Asking multiple questions at once is bewildering.
 
 Ask **every** question with the `AskUserQuestion` tool — never as plain prose, never as an open-ended "what do you think?". One call, one question.
+
+- **No `AskUserQuestion` in this harness?** Ask in prose, still one question per message, with lettered options (`A`, `B`, `C`…), the recommendation first, and a one-line trade-off under each. Everything below applies; a `preview` becomes a fenced block under its option.
+- **The one open question.** Options steer; my own words carry intent. When the plan's purpose is unstated, open with a single open-ended "why" — what is this for, and for whom? — before any options. Never a second one.
 
 Each question must have:
 
@@ -54,4 +57,6 @@ Stop when a further question would only deepen an area already surfaced, not rev
 
 Depth-first: stop when the remaining questions no longer change what gets built. Breadth-first: stop per the rule above.
 
-Either way, finish by summarizing the decisions reached and the open risks the interview surfaced.
+Either way, finish by summarizing the decisions reached and the open risks the interview surfaced. Then stop: do not act on the plan until I confirm the summary is the shared understanding.
+
+Next step, once confirmed: the `to-spec` skill.

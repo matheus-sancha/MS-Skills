@@ -7,7 +7,7 @@ description: Blueprint for a local-first Flutter app shipped to users as a plain
 
 A **local-first** Flutter app — no accounts, no server, no sync — that reaches users as a **drop**: a plain zip they unzip anywhere and run. Two consequences of that setup drive every rule below. You cannot push a fix, so a bad drop lives on someone's PC until they ask for another. And nobody is watching the app run, so the only evidence you will ever get is what the build wrote down about itself.
 
-Worked example: `C:\src\Chronus`. Read it when a rule here needs one.
+Worked example, if present on this machine: `C:\src\Chronus`. Read it when a rule here needs one; the rules stand without it.
 
 ## The shape
 
@@ -43,11 +43,11 @@ A decision that took thought gets a doc comment naming the alternative and why i
 
 ```dart
 /// _Rejected: `package_info_plus` reading `pubspec.yaml`._ Its `1.0.0+1`
-/// deliberately does not yet mean what §8.3 means by v1, so a semver would
-/// have to start claiming something untrue.
+/// does not yet mean what the release plan means by v1, so showing a semver
+/// would claim something untrue.
 ```
 
-`docs/DESIGN.md` is the single source of truth for intended behaviour, cited from code by section number (`(DESIGN.md §10.5)`). Read it before changing behaviour; update it in the same commit that changes it.
+`docs/DESIGN.md` is the single source of truth for intended behaviour, cited from code by section number (`(DESIGN.md §<n>)`). Read it before changing behaviour; update it in the same commit that changes it.
 
 ## When to read what
 

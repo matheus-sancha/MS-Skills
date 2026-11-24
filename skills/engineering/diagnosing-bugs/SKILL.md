@@ -1,6 +1,6 @@
 ---
 name: diagnosing-bugs
-description: Diagnosis discipline for hard bugs — build a tight, red-capable feedback loop before hypothesising. Use when a bug has survived an obvious fix attempt, its cause is non-obvious, it reproduces only intermittently, or something has become measurably slower.
+description: Diagnosis discipline for hard bugs. Use when a bug has survived an obvious fix attempt, its cause is non-obvious, it reproduces only intermittently, or something has become measurably slower.
 ---
 
 # Diagnosing Bugs
@@ -11,13 +11,15 @@ A discipline for **hard** bugs. Skip phases only when explicitly justified.
 
 When exploring the codebase, read `CONTEXT.md` if it exists to get a mental model of the relevant modules, and check any ADRs covering the area you're touching.
 
+**Redact.** Everything this skill has you paste — invocations, output, captured artifacts — gets every secret replaced with `<REDACTED>` first. Build loops against env vars so the credential stays in the environment, and quote only the lines of an artifact that carry the signal. If the redacted output can't carry the diagnosis, say so and ask.
+
 ## Phase 1 — Build a feedback loop
 
 **This is the skill.** Everything else is mechanical. If you have a **tight** pass/fail signal that goes **red** on _this_ bug, you will find the cause; bisection, hypothesis-testing, and instrumentation all just consume it. If you don't have one, no amount of staring at code will save you.
 
 Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
 
-[FEEDBACK-LOOP.md](FEEDBACK-LOOP.md) holds the ten ways to construct a loop, ordered by preference, plus how to handle bugs that reproduce only sometimes. Read it now unless the right loop is already obvious.
+[FEEDBACK-LOOP.md](FEEDBACK-LOOP.md) holds the ways to construct a loop, ordered by preference, plus how to handle bugs that reproduce only sometimes. Read it now unless the right loop is already obvious.
 
 ### Tighten the loop
 
@@ -31,7 +33,7 @@ A 30-second flaky loop is barely better than no loop; a 2-second deterministic o
 
 ### Completion criterion — a tight loop that goes red
 
-Phase 1 is done when you can name **one command** — a script path, a test invocation, a curl — that you have **already run at least once** (paste the invocation and its output), and that is:
+Phase 1 is done when you can name **one command** — a script path, a test invocation, a curl — that you have **already run at least once** (paste the invocation and its output, redacted), and that is:
 
 - [ ] **Red-capable** — it drives the actual bug code path and asserts the **user's exact symptom**, so it goes red on this bug and green once fixed. Not "runs without erroring".
 - [ ] **Deterministic** — same verdict every run (for flaky bugs: a pinned, high reproduction rate).
@@ -62,6 +64,8 @@ Each must be **falsifiable** — state the prediction it makes:
 
 If you cannot state the prediction, the hypothesis is a vibe — discard or sharpen it.
 
+**Feed: the working twin.** Find similar code in the repo that works and list **every** difference between it and the broken path, however small. Each difference is a candidate hypothesis.
+
 **Show the ranked list to the user before testing.** They often re-rank it instantly ("we just deployed a change to #3") or know what's already been ruled out. Cheap checkpoint, big time saver. Don't block on it — proceed with your ranking if the user is away.
 
 ## Phase 4 — Instrument
@@ -78,9 +82,9 @@ Each probe must map to a specific prediction from Phase 3. **Change one variable
 
 ## Phase 5 — Fix and regression test
 
-Write the regression test **before the fix** — but only if there is a **correct seam** for it.
+**Fix at the source.** Trace the bad value back up the call chain to where it first went wrong, and fix there — not where it surfaces. A guard at the symptom leaves the trigger live for the next caller.
 
-A correct seam exercises the **real bug pattern** as it occurs at the call site. If the only available seam is too shallow — a single-caller test when the bug needs multiple callers, a unit test that can't replicate the triggering chain — a test there gives false confidence.
+Write the regression test **before the fix** — but only at a **correct seam**, as the `test-strategy` skill defines it. A single-caller test when the bug needs multiple callers, or a unit test that can't replicate the triggering chain, is not one.
 
 **If no correct seam exists, that itself is the finding.** Note it: the architecture is preventing the bug from being locked down. Carry it to Phase 6.
 
@@ -92,6 +96,8 @@ With a correct seam:
 4. Watch it pass.
 5. Re-run the Phase 1 loop against the original, un-minimised scenario.
 
+**Three failed fixes: stop.** When each fix reveals a new problem somewhere else, the hypotheses aren't the trouble — the architecture is. Stop patching and put that pattern to the user before a fourth attempt.
+
 ## Phase 6 — Cleanup and post-mortem
 
 Required before declaring done:
@@ -102,4 +108,4 @@ Required before declaring done:
 - [ ] Throwaway prototypes deleted, or moved somewhere clearly marked
 - [ ] The hypothesis that proved correct is stated in the commit or PR message, so the next debugger learns
 
-**Then ask: what would have prevented this bug?** If the answer is architectural — no good test seam, tangled callers, hidden coupling — hand off to `/codebase-design` with the specifics; if it's accumulated waste or duplication, hand off to `/lean-code-reviewer`. Make the recommendation **after** the fix is in: you know more now than when you started.
+**Then ask: what would have prevented this bug?** If the answer is architectural — no good test seam, tangled callers, hidden coupling — hand off to the `codebase-design` skill with the specifics; if it's accumulated waste or duplication, to the `lean-code-reviewer` skill. Make the recommendation **after** the fix is in: you know more now than when you started.

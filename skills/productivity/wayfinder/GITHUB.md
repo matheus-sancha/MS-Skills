@@ -3,6 +3,13 @@
 Every command below was verified against the live GitHub API. `$R` is
 `owner/repo`.
 
+**No `gh` in this session** (some cloud sessions)? The GitHub MCP tools do the
+same operations: `issue_write` (create, label, assign, close with a
+`state_reason`), `add_issue_comment`, `sub_issue_write` (wiring — it too wants
+the database id), `issue_read` (body, comments, sub-issues). The MCP server has
+no blocked-by tool: without `gh`, record blockers as a `Blocked by <ticket name>`
+line in the ticket body and compute the frontier from those.
+
 ## Three ids, and which one each call wants
 
 This is the trap. An issue has three identifiers, and the relationship
@@ -64,13 +71,21 @@ gh api -X POST repos/$R/issues/<blocked-number>/dependencies/blocked_by \
   -F issue_id=$BLOCKER_ID
 ```
 
-Labels must exist before use: `gh label create "wayfinder:map" --force`.
+Labels must exist before use — the map label and all four ticket types:
+
+```bash
+for l in map research prototype grilling task; do
+  gh label create "wayfinder:$l" -R $R --force
+done
+```
 
 **REST** (no GraphQL):
 
 ```bash
 # Labels (422 = already exists, fine).
-gh api -X POST repos/$R/labels -f name="wayfinder:map" -f color=ededed
+for l in map research prototype grilling task; do
+  gh api -X POST repos/$R/labels -f name="wayfinder:$l" -f color=ededed
+done
 
 # The map and its tickets. Body from a file with -F body=@file.md.
 MAP=$(gh api -X POST repos/$R/issues -f title="<destination-shaped title>" \
@@ -153,9 +168,9 @@ gh issue edit -R $R <number> --add-assignee @me
 gh issue comment -R $R <number> -F answer.md
 gh issue close -R $R <number>
 
-# Rule out of scope: close without a resolution comment, then add the
-# one-line gist to the map's Out of scope section.
-gh issue close -R $R <number> -c "Out of scope: <why>"
+# Rule out of scope: close as not planned with a one-line reason (no
+# resolution comment), then add the gist to the map's Out of scope section.
+gh issue close -R $R <number> --reason "not planned" -c "Out of scope: <why>"
 ```
 
 **REST** (no GraphQL):
@@ -165,7 +180,8 @@ ME=$(gh api user --jq .login)
 gh api -X POST repos/$R/issues/<number>/assignees -f "assignees[]=$ME"   # claim
 gh api -X POST repos/$R/issues/<number>/comments -F body=@answer.md      # answer
 gh api -X PATCH repos/$R/issues/<number> -f state=closed                 # resolve
-gh api -X PATCH repos/$R/issues/<number> -f state=closed -f state_reason=not_planned  # out of scope
+gh api -X POST repos/$R/issues/<number>/comments -f body="Out of scope: <why>"       # out of scope…
+gh api -X PATCH repos/$R/issues/<number> -f state=closed -f state_reason=not_planned  # …closed as not planned
 ```
 
 Closing a ticket unblocks everything it was blocking — verified: the newly
