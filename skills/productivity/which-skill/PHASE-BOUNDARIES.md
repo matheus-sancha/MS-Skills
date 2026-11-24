@@ -8,7 +8,7 @@ Harness commands differ; the five moves don't.
 |---|---|
 | **Continue** | Stay in the session. No context switch. |
 | **Clear** | Empty the window, start from nothing. |
-| **Hand off** | Write a portable document (the `handoff` skill) and seed a session anywhere with it (the `resume` skill). |
+| **Hand off** | Write a portable document (the `handoff` skill) and seed a session anywhere with it (the `pickup` skill). |
 | **Subagent** | Send a task to its own window; get a report back. |
 | **Compact** | Compress this context and carry on from the summary. |
 

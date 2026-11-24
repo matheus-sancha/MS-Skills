@@ -35,7 +35,7 @@ Match what the user is trying to do to a skill below, name it, and say where on 
 | A question needs reading — docs, APIs, sources | `research` | take the findings into `grilling` |
 | The whole codebase carries waste or redundancy | `lean-code-reviewer` | each finding worth acting on enters at `grilling` or `implement` |
 | Onboarding to a codebase, or recording a decision | `context-map` | — |
-| Session ending, or work moving elsewhere | `handoff`, then `resume` in the new session | — |
+| Session ending, or work moving elsewhere | `handoff`, then `pickup` in the new session | — |
 | Mid-merge or mid-rebase with conflicts | `resolving-merge-conflicts` | — |
 
 ## Vocabulary underneath

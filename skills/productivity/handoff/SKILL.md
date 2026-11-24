@@ -5,7 +5,7 @@ argument-hint: "What will the next session be used for?"
 disable-model-invocation: true
 ---
 
-Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save it to the OS temp directory (`%TEMP%` on Windows, `$TMPDIR` or `/tmp` elsewhere), not the current workspace, as `handoff-<YYYY-MM-DD>-<slug>.md`, where the slug is two to four kebab-case words naming the work. Print the full path when done; the `resume` skill finds the document by that filename.
+Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save it to the OS temp directory (`%TEMP%` on Windows, `$TMPDIR` or `/tmp` elsewhere), not the current workspace, as `handoff-<YYYY-MM-DD>-<slug>.md`, where the slug is two to four kebab-case words naming the work. Print the full path when done; the `pickup` skill finds the document by that filename.
 
 Include a "suggested skills" section in the document, which suggests skills that the agent should invoke.
 

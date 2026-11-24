@@ -1,3 +1,5 @@
+<img src="./.claude-plugin/icon.png" alt="MS Skills icon" width="96" align="right">
+
 # MS Skills
 
 [![Validate skills](https://github.com/matheus-sancha/MS-Skills/actions/workflows/validate.yml/badge.svg)](https://github.com/matheus-sancha/MS-Skills/actions/workflows/validate.yml)
@@ -116,7 +118,7 @@ diff, `lean-code-reviewer` reviews a whole codebase, and Claude Code's built-in
 | [wayfinder](./skills/productivity/wayfinder/) | slash | Plan work too big for one session as a map of tickets on GitHub Issues |
 | [research](./skills/productivity/research/) | auto | Investigate a question against primary sources, captured as a cited Markdown file |
 | [handoff](./skills/productivity/handoff/) | slash | Compact the conversation into a handoff document for another session |
-| [resume](./skills/productivity/resume/) | slash | Pick up from a handoff document, checking what drifted since it was written |
+| [pickup](./skills/productivity/pickup/) | slash | Pick up from a handoff document, checking what drifted since it was written |
 | [teach](./skills/productivity/teach/) | slash | Learn a skill or concept across multiple sessions |
 | [skill-creator](./skills/productivity/skill-creator/) | auto | Principles and vocabulary for writing and testing skills |
 
@@ -126,16 +128,6 @@ diff, `lean-code-reviewer` reviews a whole codebase, and Claude Code's built-in
 |---|---|---|
 | [flutter-desktop-app](./skills/engineering/flutter-desktop-app/) | auto | Blueprint for a local-first Flutter app shipped as a plain Windows zip |
 | [flutter-ui-design](./skills/engineering/flutter-ui-design/) | auto | Design and audit adaptive Flutter UI: tokens, Material 3, layout, navigation |
-
-### Vendored
-
-Third-party skills copied in unchanged. See
-[skills/vendor/README.md](./skills/vendor/README.md) for upstreams and licensing.
-
-| Skill | Purpose | Upstream |
-|---|---|---|
-| [building-native-ui](./skills/vendor/building-native-ui/) | Guide for building apps with Expo Router | [expo/skills](https://github.com/expo/skills) |
-| [find-skills](./skills/vendor/find-skills/) | Discover and install agent skills | [vercel-labs/skills](https://github.com/vercel-labs/skills) |
 
 ## Installation
 
@@ -209,11 +201,11 @@ outside it.
 MS-Skills/
 ├── .claude-plugin/
 │   ├── plugin.json          plugin manifest; lists every skill path
+│   ├── icon.png             plugin icon
 │   └── marketplace.json     makes the repo installable via /plugin
 ├── skills/
 │   ├── engineering/         one folder per skill
-│   ├── productivity/
-│   └── vendor/              third-party, unchanged
+│   └── productivity/
 ├── templates/example-skill/ worked example of a skill; not installed
 ├── scripts/
 │   ├── link-skills.ps1      symlink installer for Windows
@@ -257,6 +249,4 @@ and `skill-creator` come from
 
 ## License
 
-[MIT](./LICENSE) for the skills authored here. Skills under `skills/vendor/`
-remain under their upstream licenses; see
-[skills/vendor/README.md](./skills/vendor/README.md).
+[MIT](./LICENSE).

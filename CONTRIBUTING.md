@@ -17,10 +17,7 @@ skills/
         └── SKILL.md
 ```
 
-Current categories: `engineering`, `productivity`, `vendor`. Add a new category directory if your skill doesn't fit.
-
-`vendor/` holds third-party skills copied in rather than authored here — see
-[skills/vendor/README.md](./skills/vendor/README.md) before editing anything in it.
+Current categories: `engineering`, `productivity`. Add a new category directory if your skill doesn't fit.
 
 Two directories are deliberately **outside** `skills/`, because everything under
 `skills/` gets installed as a live skill:

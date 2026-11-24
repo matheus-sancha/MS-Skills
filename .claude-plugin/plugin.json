@@ -27,13 +27,11 @@
     "./skills/engineering/update-docs",
     "./skills/productivity/grilling",
     "./skills/productivity/handoff",
+    "./skills/productivity/pickup",
     "./skills/productivity/research",
-    "./skills/productivity/resume",
     "./skills/productivity/skill-creator",
     "./skills/productivity/teach",
     "./skills/productivity/wayfinder",
-    "./skills/productivity/which-skill",
-    "./skills/vendor/building-native-ui",
-    "./skills/vendor/find-skills"
+    "./skills/productivity/which-skill"
   ]
 }

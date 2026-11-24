@@ -11,12 +11,15 @@ Facts are your job, decisions are mine. When a question can be answered from the
 
 Ask **one question at a time**, waiting for the answer before continuing. Asking multiple questions at once is bewildering.
 
-Ask **every** question with the `AskUserQuestion` tool — never as plain prose, never as an open-ended "what do you think?". One call, one question.
+The shape of the question picks the form:
 
-- **No `AskUserQuestion` in this harness?** Ask in prose, still one question per message, with lettered options (`A`, `B`, `C`…), the recommendation first, and a one-line trade-off under each. Everything below applies; a `preview` becomes a fenced block under its option.
-- **The one open question.** Options steer; my own words carry intent. When the plan's purpose is unstated, open with a single open-ended "why" — what is this for, and for whom? — before any options. Never a second one.
+- **A choice between distinct options** → the `AskUserQuestion` tool. One call, one question. Most grilling questions are this.
+- **An open question** — a name, a description, a number, the purpose behind the plan → plain text, no options. Options steer; my own words carry intent, so never invent choices for a question that has none. When the plan's purpose is unstated, open with this: what is it for, and for whom?
+- **No `AskUserQuestion` in this harness?** Ask choices in prose, still one question per message, with lettered options (`A`, `B`, `C`…), the recommendation first, and a one-line trade-off under each. Everything below applies; a `preview` becomes a fenced block under its option.
 
-Each question must have:
+Never a vague "what do you think?" — an open question still asks for one specific thing.
+
+Each choice question must have:
 
 - **3-4 concrete options.** Not "yes / no" — name the actual alternatives. The tool adds an "Other" escape hatch and a free-text notes field automatically; never write your own "Other" option.
 - **Your recommendation first**, with `(Recommended)` appended to its label. You are the one who has read the code; take a position.
