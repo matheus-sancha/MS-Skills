@@ -1,5 +1,5 @@
 ---
-name: resume
+name: pickup
 description: Pick up work from a handoff document — rebuild the mental model, verify the world hasn't moved since it was written, and confirm before acting.
 argument-hint: "Path to the handoff document (omit to search the temp directory)"
 disable-model-invocation: true

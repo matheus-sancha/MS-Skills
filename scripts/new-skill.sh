@@ -96,10 +96,14 @@ mkdir -p "$SKILL_DIR"
 
 TITLE="$(echo "$SKILL_NAME" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2); print}')"
 
+# Quote the description so a colon or other YAML syntax in it stays a string.
+DESC_YAML="${SKILL_DESC//\\/\\\\}"
+DESC_YAML="\"${DESC_YAML//\"/\\\"}\""
+
 cat > "$SKILL_DIR/SKILL.md" <<EOF
 ---
 name: $SKILL_NAME
-description: $SKILL_DESC
+description: $DESC_YAML
 ${DISABLE_MODEL}---
 
 # $TITLE

@@ -10,7 +10,7 @@
     {
       "name": "ms-skills",
       "source": "./",
-      "description": "Engineering and productivity skills: module design, bug diagnosis, diff and codebase review, test strategy, Flutter, handoff/resume, research, teaching, and multi-session planning.",
+      "description": "Engineering and productivity skills: module design, bug diagnosis, diff and codebase review, test strategy, Flutter, handoff/pickup, research, teaching, and multi-session planning.",
       "category": "productivity",
       "keywords": ["skills", "engineering", "productivity", "flutter"]
     }
