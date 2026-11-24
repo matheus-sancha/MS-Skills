@@ -7,13 +7,13 @@ disable-model-invocation: true
 
 # Resume
 
-The counterpart to `/handoff`. That skill compacts a session into a document; this one turns the document back into a working mental model.
+The counterpart to the `handoff` skill. That skill compacts a session into a document; this one turns the document back into a working mental model.
 
-A handoff is a **snapshot of a world that kept moving**. It deliberately doesn't duplicate PRDs, plans, ADRs, issues, commits, or diffs — it references them by path. So the document alone is never enough: the referenced artifacts are the real content, and any of them may have changed since it was written.
+A handoff is a **snapshot of a world that kept moving**. It deliberately doesn't duplicate specs, plans, ADRs, issues, commits, or diffs — it references them by path. So the document alone is never enough: the referenced artifacts are the real content, and any of them may have changed since it was written.
 
 ## Steps
 
-1. **Find the document.** Use the path if the user gave one. Otherwise search the OS temp directory — where `/handoff` writes — and take the most recent. If several are plausible, list them with timestamps and ask which.
+1. **Find the document.** Use the path if the user gave one. Otherwise list `handoff-*.md` in the OS temp directory (`%TEMP%` on Windows, `$TMPDIR` or `/tmp` elsewhere) — the `handoff` skill writes `handoff-<YYYY-MM-DD>-<slug>.md` there — and take the newest whose slug fits the current repo or request. If several are plausible, list them with dates and ask which.
    _Done when_: you have one document and the user hasn't contradicted the choice.
 
 2. **Read it, then follow every reference.** Open each artifact it points at — specs, plans, ADRs, issues, branches. The handoff tells you *where the work was*; these tell you *what the work is*.
@@ -27,7 +27,7 @@ A handoff is a **snapshot of a world that kept moving**. It deliberately doesn't
 
    _Done when_: each reference is confirmed current, or listed as drifted with what changed.
 
-4. **Invoke the suggested skills.** `/handoff` writes a "suggested skills" section; treat it as instruction from the previous session, which knew things you don't.
+4. **Invoke the suggested skills.** The `handoff` skill writes a "suggested skills" section; treat it as instruction from the previous session, which knew things you don't.
 
 5. **Confirm before acting.** Report back, briefly:
    - What you understand the work to be, and the next concrete step.

@@ -38,12 +38,11 @@ while IFS= read -r skill_file; do
     error "name '$name_val' does not match directory '$dir_name'"
   fi
 
-  # description field — required unless the skill is user-invoked only, in
-  # which case the model never sees a description and none is needed.
+  # description field — required for every skill. Slash-only skills keep a
+  # short human-facing one; it is what the user sees in the command list.
   desc_val="$(extract_field "$skill_file" "description")"
-  slash_only="$(extract_field "$skill_file" "disable-model-invocation")"
-  if [[ -z "$desc_val" && "$slash_only" != "true" ]]; then
-    error "missing or empty 'description:' field (set 'disable-model-invocation: true' if this skill is user-invoked only)"
+  if [[ -z "$desc_val" ]]; then
+    error "missing or empty 'description:' field"
   fi
 
   NAMES+=("$dir_name")
