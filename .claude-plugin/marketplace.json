@@ -1,0 +1,18 @@
+{
+  "name": "ms-skills",
+  "owner": {
+    "name": "Matheus Sancha"
+  },
+  "metadata": {
+    "description": "Matheus Sancha's personal agent skills, installable as a Claude plugin."
+  },
+  "plugins": [
+    {
+      "name": "ms-skills",
+      "source": "./",
+      "description": "Engineering and productivity skills: module design, bug diagnosis, diff and codebase review, test strategy, Flutter, handoff/resume, research, teaching, and multi-session planning.",
+      "category": "productivity",
+      "keywords": ["skills", "engineering", "productivity", "flutter"]
+    }
+  ]
+}

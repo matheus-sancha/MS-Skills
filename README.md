@@ -6,9 +6,34 @@ agent can do in your projects.
 
 ## Installing
 
+### As a Claude plugin (recommended)
+
+The repo is a plugin marketplace containing one plugin, `ms-skills`.
+
+**Claude Code** (terminal, desktop, or IDE):
+
+```
+/plugin marketplace add matheus-sancha/MS-Skills
+/plugin install ms-skills@ms-skills
+```
+
+**Claude desktop / claude.ai (Cowork):** Customize → Plugins → Add marketplace
+→ `matheus-sancha/MS-Skills`, then install `ms-skills`. Plugins installed
+there sync to cloud sessions too.
+
+Skills are namespaced by the plugin: `/ms-skills:handoff`,
+`/ms-skills:wayfinder`, and so on. Update with `/plugin marketplace update
+ms-skills`.
+
+### As live symlinks (for editing skills)
+
+Symlinking gives un-namespaced skills (`/handoff`) that reflect edits in this
+checkout immediately, so it is the better setup while authoring. Use one
+method or the other — with both, every skill shows up twice.
+
 ```bash
-git clone https://github.com/matheus-sancha/skills
-cd skills
+git clone https://github.com/matheus-sancha/MS-Skills
+cd MS-Skills
 ```
 
 **Windows** (recommended — Git Bash's `ln -s` silently copies instead of linking):
@@ -89,7 +114,10 @@ Everything under `skills/` is installed as a live skill. Anything that should
 *not* be — templates, human-facing docs — lives outside it.
 
 ```
-skills/
+MS-Skills/
+├── .claude-plugin/
+│   ├── plugin.json           ← plugin manifest; lists every skill path
+│   └── marketplace.json      ← makes the repo installable via /plugin
 ├── skills/
 │   ├── engineering/
 │   │   ├── codebase-design/

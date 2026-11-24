@@ -83,12 +83,13 @@ Prompts for a category, name, and description, then creates the directory and `S
 bash scripts/validate.sh
 ```
 
-Checks that every `SKILL.md` has the required fields and that directory names match the `name:` field. CI runs this automatically on all PRs.
+Checks that every `SKILL.md` has the required fields, that directory names match the `name:` field, and that `.claude-plugin/plugin.json` lists exactly the skills on disk. CI runs this automatically on all PRs.
 
 ## PR checklist
 
 - [ ] Skill is in the right category under `skills/<category>/<skill-name>/`
 - [ ] Directory name matches `name:` in frontmatter
 - [ ] `description:` is present (or `disable-model-invocation: true` is set intentionally)
+- [ ] Skill path added to `"skills"` in `.claude-plugin/plugin.json`
 - [ ] `bash scripts/validate.sh` passes locally
 - [ ] `README.md` skills table updated with the new entry
