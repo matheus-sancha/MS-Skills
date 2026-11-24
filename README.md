@@ -1,9 +1,13 @@
-<img src="./.claude-plugin/icon.png" alt="MS Skills icon" width="96" align="right">
+<p align="center">
+  <img src="./.claude-plugin/icon.png" alt="MS Skills icon" width="120">
+</p>
 
-# MS Skills
+<h1 align="center">MS Skills</h1>
 
-[![Validate skills](https://github.com/matheus-sancha/MS-Skills/actions/workflows/validate.yml/badge.svg)](https://github.com/matheus-sancha/MS-Skills/actions/workflows/validate.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+<p align="center">
+  <a href="https://github.com/matheus-sancha/MS-Skills/actions/workflows/validate.yml"><img src="https://github.com/matheus-sancha/MS-Skills/actions/workflows/validate.yml/badge.svg" alt="Validate skills"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+</p>
 
 A curated set of agent skills for [Claude Code](https://claude.com/claude-code)
 and other Agent-Skills-compatible harnesses. The skills cover one engineering
