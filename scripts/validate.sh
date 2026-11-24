@@ -62,6 +62,26 @@ if [[ ${#NAMES[@]} -gt 0 ]]; then
   done < <(printf '%s\n' "${NAMES[@]}" | sort | uniq -d)
 fi
 
+# The plugin manifest lists every skill explicitly (categories are nested, so
+# the default one-level discovery would find none). A skill missing from the
+# list is silently not installed; a stale entry breaks the plugin.
+MANIFEST="$REPO_ROOT/.claude-plugin/plugin.json"
+echo "Checking: .claude-plugin/plugin.json"
+if [[ ! -f "$MANIFEST" ]]; then
+  error "missing .claude-plugin/plugin.json"
+else
+  on_disk="$(cd "$REPO_ROOT" && find skills -name SKILL.md | sed 's|/SKILL.md$||; s|^|./|' | sort)"
+  listed="$(grep -o '"\./skills/[^"]*"' "$MANIFEST" | tr -d '"' | sort)"
+  while IFS= read -r missing; do
+    [[ -z "$missing" ]] && continue
+    error "$missing is not listed under \"skills\" in plugin.json"
+  done < <(comm -23 <(echo "$on_disk") <(echo "$listed"))
+  while IFS= read -r stale; do
+    [[ -z "$stale" ]] && continue
+    error "plugin.json lists $stale but it has no SKILL.md"
+  done < <(comm -13 <(echo "$on_disk") <(echo "$listed"))
+fi
+
 # ── Result ─────────────────────────────────────────────────────────────────────
 
 echo ""
