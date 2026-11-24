@@ -1,32 +1,23 @@
 ---
 name: example-skill
-description: A template skill demonstrating the structure of a Claude Code skill. Use this as a starting point when creating your own skill — copy the directory, rename it, and replace the contents of this file.
-version: 1.0.0
-license: MIT
+description: Worked example of this repo's skill layout. Use when scaffolding a new skill by hand.
 ---
 
 # Example Skill
 
-This is the body of a skill file. Write your skill instructions here in plain Markdown.
+Turn this copy into a real skill. Work from the repo root.
 
-## How this works
+1. **Place it.** Copy this directory to `skills/<category>/<skill-name>/` (kebab-case; categories are the folders under `skills/`).
+   _Done when_: the directory name is the skill's name.
 
-When Claude Code loads this skill, it reads the `description:` frontmatter field to decide when to invoke the skill automatically. The body (this section) contains the actual instructions Claude follows when the skill runs.
+2. **Set the frontmatter.** Make `name:` identical to the directory name. Write the `description:` as triggers: what the skill is, then one "Use when…" clause per distinct case. For a slash-only skill, add `disable-model-invocation: true` and cut the description to a one-line summary for the human.
+   _Done when_: `name:` matches the directory and the description says when, never how.
 
-## Writing skill instructions
+3. **Write the body.** Replace these steps with instructions to the agent: imperative, in order, each step ending on a checkable _Done when_. Follow the `skill-creator` skill for the principles.
 
-- Use imperative voice: "Search for X", "Run Y", "Output Z"
-- Be specific about what to do and what to output
-- Reference supporting docs in `references/` when the skill is complex
+4. **Disclose reference.** Move lookup material only some runs need into an UPPERCASE sibling file and point at it where it is needed, as [`REFERENCE.md`](REFERENCE.md) shows. Delete that file if the skill has none.
 
-See [references/overview.md](./references/overview.md) for more details on this example, and see [docs/authoring-guide.md](../../docs/authoring-guide.md) for general authoring guidance.
+5. **Register it.** Add `"./skills/<category>/<skill-name>"` to `"skills"` in `.claude-plugin/plugin.json`, and a row to the skills table in `README.md`.
 
-## Getting started
-
-To build your own skill based on this template:
-
-1. Copy this directory: `cp -r example-skill my-skill`
-2. Rename the directory to your skill's name (kebab-case)
-3. Update the `name:` and `description:` frontmatter fields to match
-4. Replace this body with your skill's instructions
-5. Run `bash scripts/validate.sh` to confirm everything is valid
+6. **Validate.** Run `bash scripts/validate.sh`.
+   _Done when_: it reports every skill valid.

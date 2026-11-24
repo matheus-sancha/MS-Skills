@@ -1,13 +1,13 @@
 ---
 name: flutter-ui-design
-description: Design and audit beautiful, adaptive UI for Flutter apps — design tokens, Material 3 anti-defaults, proportion/type/color scales, adaptive navigation, and app flow. Use when building or theming Flutter screens, setting up ThemeData/ColorScheme, deciding navigation or layout, or reviewing a Flutter UI that looks off ("make this prettier", "fix the theme", "why does this feel cluttered"). For app architecture, data flow, and packaging, use flutter-desktop-app instead.
+description: Look and feel of a Flutter UI. Use when building or theming a Flutter screen, choosing its navigation or layout, or auditing one that looks off. Not for architecture, data flow, or packaging.
 ---
 
 # Flutter UI Design
 
 The presentation-layer companion to `flutter-desktop-app`. That skill owns **where widgets live and how data flows**; this one owns **how they look and feel**. Reach for it while building a screen, while wiring `ThemeData`, while choosing navigation — and to audit a screen that looks off.
 
-The default aesthetic is **calm, minimal, content-first**: generous whitespace, one accent over neutrals, few weights, low chrome, motion that earns its place. This is the house default, not a mandate — if the project already has a brand, adopt its tokens but keep the systematic discipline below. What is *not* negotiable is the accessibility floor (see `references/AUDIT.md`).
+The default aesthetic is **calm, minimal, content-first**: generous whitespace, one accent over neutrals, few weights, low chrome, motion that earns its place. This is the house default, not a mandate — if the project already has a brand, adopt its tokens but keep the systematic discipline below. What is *not* negotiable is the accessibility floor (see [AUDIT.md](AUDIT.md)).
 
 Rules are paraphrased from three authorities and credited where a rule derives from one: the **Material 3** spec (component behaviour, state layers, elevation, motion), **Refactoring UI** by Wathan & Schoger (proportion, scales, hierarchy, semantic colour), and **Apple's HIG** (cross-platform navigation and gesture expectation). Concrete numbers below are this skill's own, chosen to embody those ideas.
 
@@ -29,7 +29,7 @@ The default scales (all overridable; each maps to a Material 3 role):
 | **Motion** | `100 · 200 · 300 ms`, emphasized easing | Enter/exit only where it clarifies. No decorative animation. |
 | **Colour** | one seed (**not** default purple) + neutral surfaces + semantic success/warning/error | Both themes from this one seed. |
 
-`references/THEME.md` turns these into a working `ThemeData`/`ColorScheme` and lists the Material 3 anti-defaults that separate a beautiful Flutter app from a stock demo.
+[THEME.md](THEME.md) turns these into a working `ThemeData`/`ColorScheme` and lists the Material 3 anti-defaults that separate a beautiful Flutter app from a stock demo.
 
 ## Dependencies
 
@@ -39,8 +39,8 @@ Endorsed: **`go_router`** for navigation (matches `flutter-desktop-app`, so the 
 
 | Occasion | Read |
 |---|---|
-| Setting up `ThemeData`/`ColorScheme`, fixing the stock-M3 look, choosing colours/type/motion | [THEME.md](references/THEME.md) |
-| Proportions & spacing rhythm, layout grids, **navigation** patterns, **app flow** and screen states | [STRUCTURE.md](references/STRUCTURE.md) |
-| Reviewing a screen — the pass/fail checklist, including the hard accessibility floor | [AUDIT.md](references/AUDIT.md) |
+| Setting up `ThemeData`/`ColorScheme`, fixing the stock-M3 look, choosing colours/type/motion | [THEME.md](THEME.md) |
+| Proportions & spacing rhythm, layout grids, **navigation** patterns, **app flow** and screen states | [STRUCTURE.md](STRUCTURE.md) |
+| Reviewing a screen — the pass/fail checklist, including the hard accessibility floor | [AUDIT.md](AUDIT.md) |
 
 When creating or restyling a screen, read `THEME.md` and `STRUCTURE.md` first, build against the tokens, then run yourself against `AUDIT.md` before calling it done.

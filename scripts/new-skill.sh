@@ -58,21 +58,36 @@ while true; do
   fi
 done
 
-# Description
-while true; do
-  prompt SKILL_DESC "Description (one or two sentences, or leave blank for user-invoked): "
-  break
-done
+# User-invoked (slash-only)?
+prompt SLASH_ONLY "Slash-only — invoked by the user, never by the model? [y/N] "
+SLASH_ONLY="${SLASH_ONLY,,}"  # lowercase
 
-# User-invoked?
 DISABLE_MODEL=""
-if [[ -z "$SKILL_DESC" ]]; then
+DESC_PROMPT="Description (what it is, then 'Use when…' — one trigger per case): "
+if [[ "$SLASH_ONLY" == "y" ]]; then
   DISABLE_MODEL="disable-model-invocation: true"$'\n'
+  DESC_PROMPT="Description (one line, for the human's skill list): "
 fi
 
-# References directory
-prompt ADD_REFS "Create a references/ subdirectory? [y/N] "
-ADD_REFS="${ADD_REFS,,}"  # lowercase
+# Description — required either way
+while true; do
+  prompt SKILL_DESC "$DESC_PROMPT"
+  if [[ -z "$SKILL_DESC" ]]; then
+    echo "Error: description cannot be empty." >&2
+  else
+    break
+  fi
+done
+
+# Sibling reference file
+while true; do
+  prompt REF_NAME "Reference file next to SKILL.md (UPPERCASE name, e.g. FORMATS; blank for none): "
+  REF_NAME="${REF_NAME%.md}"
+  if [[ -z "$REF_NAME" || "$REF_NAME" =~ ^[A-Z][A-Z0-9]*(-[A-Z0-9]+)*$ ]]; then
+    break
+  fi
+  echo "Error: use UPPERCASE letters, numbers and hyphens (e.g. MAP-FORMAT)." >&2
+done
 
 # ── Create files ───────────────────────────────────────────────────────────────
 
@@ -81,30 +96,24 @@ mkdir -p "$SKILL_DIR"
 
 TITLE="$(echo "$SKILL_NAME" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2); print}')"
 
-DESC_LINE=""
-if [[ -n "$SKILL_DESC" ]]; then
-  DESC_LINE="description: $SKILL_DESC"$'\n'
-fi
-
 cat > "$SKILL_DIR/SKILL.md" <<EOF
 ---
 name: $SKILL_NAME
-${DESC_LINE}${DISABLE_MODEL}version: 1.0.0
----
+description: $SKILL_DESC
+${DISABLE_MODEL}---
 
 # $TITLE
 
 TODO: Write your skill instructions here.
 EOF
 
-if [[ "$ADD_REFS" == "y" ]]; then
-  mkdir -p "$SKILL_DIR/references"
-  cat > "$SKILL_DIR/references/README.md" <<EOF
-# $SKILL_NAME — References
+if [[ -n "$REF_NAME" ]]; then
+  cat > "$SKILL_DIR/$REF_NAME.md" <<EOF
+# $TITLE — $REF_NAME
 
-Add supporting Markdown documents here.
+TODO: Reference material for the $SKILL_NAME skill. Link this file from the step in SKILL.md that needs it.
 EOF
-  echo "Created: skills/$CATEGORY/$SKILL_NAME/references/README.md"
+  echo "Created: skills/$CATEGORY/$SKILL_NAME/$REF_NAME.md"
 fi
 
 echo ""

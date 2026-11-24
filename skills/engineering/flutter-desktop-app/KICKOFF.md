@@ -20,7 +20,7 @@ The set that carries a local-first desktop app. Add to it reluctantly: every pac
 
 ## Pick the platforms once, on purpose
 
-Windows and iOS share this architecture cleanly. Web does not: `dart:io` and native SQLite run through the whole data layer, so web is a port, not a build flag. Decide that at kickoff rather than discovering it later, and write the decision down in `DESIGN.md`.
+Windows and iOS share this architecture cleanly. Web does not: `dart:io` and native SQLite run through the whole data layer, so web is a port, not a build flag. Decide that at kickoff rather than discovering it later, and write the decision down in `docs/DESIGN.md`.
 
 ## `main()` has an order, and it is load-bearing
 
@@ -55,7 +55,7 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - lib/src/l10n/generated/**
-    - prototype/**        # throwaway spikes are not the app
+    - "**/*_prototype.dart"   # throwaway spikes sit next to their module (the `prototype` skill)
 ```
 
 CI then needs no code-generation step and a fresh clone builds. Regenerate with:

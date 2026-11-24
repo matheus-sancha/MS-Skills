@@ -5,6 +5,7 @@
     "name": "Matheus Sancha"
   },
   "repository": "https://github.com/matheus-sancha/MS-Skills",
+  "license": "MIT",
   "keywords": ["skills", "engineering", "productivity", "flutter", "code-review"],
   "skills": [
     "./skills/engineering/codebase-design",
@@ -13,17 +14,22 @@
     "./skills/engineering/domain-modeling",
     "./skills/engineering/flutter-desktop-app",
     "./skills/engineering/flutter-ui-design",
+    "./skills/engineering/implement",
     "./skills/engineering/lean-code-reviewer",
     "./skills/engineering/prototype",
+    "./skills/engineering/resolving-merge-conflicts",
     "./skills/engineering/review-changes",
     "./skills/engineering/test-strategy",
+    "./skills/engineering/to-spec",
+    "./skills/engineering/to-tickets",
+    "./skills/productivity/grilling",
     "./skills/productivity/handoff",
-    "./skills/productivity/project-reviewer",
     "./skills/productivity/research",
     "./skills/productivity/resume",
     "./skills/productivity/skill-creator",
     "./skills/productivity/teach",
     "./skills/productivity/wayfinder",
+    "./skills/productivity/which-skill",
     "./skills/vendor/building-native-ui",
     "./skills/vendor/find-skills"
   ]

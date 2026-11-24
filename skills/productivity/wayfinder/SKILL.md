@@ -12,6 +12,8 @@ The destination varies per effort, and naming it is the first act of charting �
 
 Wayfinder is **planning** by default: each ticket resolves a decision, and the map is done when the way is clear — nothing left to decide before someone goes and does the thing. The pull to just do the work is usually the signal you've reached the edge of the map and it's time to hand off. An effort can override this in its **Notes** — carrying execution into the map itself — but absent that, produce decisions, not deliverables.
 
+When the way is clear, hand off: the `to-spec` skill, then `to-tickets`, then `implement`.
+
 ## Refer by name
 
 Every map and ticket is an issue, so it has a **name** — its title. In everything the human reads — narration, the map's Decisions-so-far — refer to it by that name, never by a bare id, number, or slug. A wall of `#42, #43, #44` is illegible; names read at a glance. The id and URL don't vanish — a name wraps its link — but they ride *inside* the name, never stand in for it.
@@ -24,7 +26,7 @@ The map is an **index**, not a store. It lists the decisions made and points at 
 
 The map body and ticket body are templated in [MAP-FORMAT.md](MAP-FORMAT.md); read it before creating or editing either.
 
-Every command for creating, wiring, and querying the map lives in [GITHUB.md](GITHUB.md) — the exact `gh` invocations, verified against the live API. Read it before touching the tracker; the relationship endpoints take a database id that is neither the issue number nor the GraphQL node id, and guessing wrong fails silently.
+Every command for creating, wiring, and querying the map lives in [GITHUB.md](GITHUB.md) — the exact `gh` invocations, verified against the live API, and what to use in a session without `gh`. Read it before touching the tracker; the relationship endpoints take a database id that is neither the issue number nor the GraphQL node id, and guessing wrong fails silently.
 
 Each ticket carries a `wayfinder:<type>` label — one of `research`, `prototype`, `grilling`, `task` (see [Ticket Types](#ticket-types)).
 
@@ -38,9 +40,9 @@ The answer isn't part of the ticket body — it's recorded on resolution (see [W
 
 Every ticket is either **HITL** — human in the loop, worked *with* a human who speaks for themselves — or **AFK**, driven by the agent alone. A HITL ticket only resolves through that live exchange; the agent never stands in for the human's side of it (a grilling agent that answers its own questions has broken this). For that reason a HITL ticket is worked in the **main session**, never delegated to a subagent: a subagent has no channel to the human, so its questions have nowhere to surface and answering them itself is the only way it can finish.
 
-- **Research** (AFK): Reading documentation, third-party APIs, or local resources like knowledge bases. Use `/research`, which creates a markdown summary; link it as an asset. Use when knowledge outside the current working directory is required.
-- **Prototype** (HITL): Raise the fidelity of the discussion by making a cheap, rough, concrete artifact to react to — an outline, a rough take, a stub, or UI/logic code via `/prototype`. Links the prototype as an asset. Use when "how should it look" or "how should it behave" is the key question.
-- **Grilling** (HITL): Conversation via `/project-reviewer` and `/domain-modeling`, one question at a time. The default case.
+- **Research** (AFK): Reading documentation, third-party APIs, or local resources like knowledge bases. Resolved by a subagent running the `research` skill, which creates a markdown summary; link it as an asset. Use when knowledge outside the current working directory is required.
+- **Prototype** (HITL): Raise the fidelity of the discussion by making a cheap, rough, concrete artifact to react to — an outline, a rough take, a stub, or UI/logic code via the `prototype` skill. Links the prototype as an asset. Use when "how should it look" or "how should it behave" is the key question.
+- **Grilling** (HITL): Conversation via the `grilling` and `domain-modeling` skills, one question at a time. The default case.
 - **Task** (HITL or AFK): Manual work that must happen before a *decision* can be made — nothing to decide, prototype, or research, but the discussion is blocked until it's done. Signing up for a service so its API can be judged, provisioning access, moving data so its shape can be seen. This is the one type that *does* rather than decides — and it earns its place by unblocking a decision, not by delivering the destination. The agent drives it alone where it can (AFK); otherwise it hands the human a precise checklist (HITL). Resolved when the work is done; the answer records what was done and any resulting facts (credentials location, new URLs, row counts) later tickets depend on.
 
 ## Fog of war
@@ -66,20 +68,21 @@ Ruling something out of scope is a scoping act, not a step on the route. When a 
 
 ## Invocation
 
-Two branches. Either way, **never resolve more than one ticket per session.**
+Two branches. Either way, **never resolve more than one ticket per session** — research tickets excepted: they are AFK, so their subagents run alongside whatever the session is doing.
 
 ### Chart the map
 
 User invokes with a loose idea.
 
-1. **Name the destination.** Run `/project-reviewer` and `/domain-modeling` to pin down what this map is finding its way to — the spec, decision, or change. The destination fixes the scope, so it's settled first.
+1. **Name the destination.** Run the `grilling` and `domain-modeling` skills to pin down what this map is finding its way to — the spec, decision, or change. The destination fixes the scope, so it's settled first.
    _Done when_: the destination is one or two lines the user has agreed to.
-2. **Map the frontier.** Grill again, **breadth-first** this time: fan out across the whole space rather than deep on any one thread, surfacing the open decisions and the first steps takeable now. Ask `/project-reviewer` for its breadth-first mode by name — its default is depth-first and will sink into the first thread it finds. **If this surfaces no fog** — the way to the destination is already clear, the whole journey small enough for one session — you don't need a map. Stop and ask the user how they'd like to proceed.
+2. **Map the frontier.** Grill again, **breadth-first** this time: fan out across the whole space rather than deep on any one thread, surfacing the open decisions and the first steps takeable now. Ask the `grilling` skill for its breadth-first mode by name — its default is depth-first and will sink into the first thread it finds. **If this surfaces no fog** — the way to the destination is already clear, the whole journey small enough for one session — you don't need a map. Stop and ask the user how they'd like to proceed.
    _Done when_: every surfaced question is sorted into ticketable or still-foggy.
 3. **Create the map** (label `wayfinder:map`): Destination and Notes filled in, Decisions-so-far empty, the fog sketched into **Not yet specified**.
 4. **Create the tickets you can specify now** as sub-issues of the map — then wire blocking edges in a **second pass**, since issues need ids before they can reference each other. Wiring sorts them into the frontier and the blocked; everything you can't yet specify stays in the fog.
    _Done when_: every ticketable question from step 2 exists as a sub-issue, and the frontier query returns a non-empty set.
-5. Stop — charting the map is one session's work; do not also resolve tickets.
+5. **Fire the research subagents.** For each frontier `research` ticket just created, claim it and dispatch a subagent to resolve it — all in parallel, each recording its own resolution.
+6. Stop — charting the map is one session's work; do not resolve any other ticket.
 
 ### Work through the map
 
@@ -87,9 +90,10 @@ User invokes with a map (URL or number). A ticket is **optional** — without on
 
 1. Load the **map** — the low-res view, not every ticket body.
 2. Choose the ticket. If the user named one, use it. Otherwise take the first frontier ticket in order. **Claim it**: assign it to yourself before any work.
-3. Resolve it — **zoom as needed**: fetch the full body of any related or closed ticket on demand; invoke the skills the `## Notes` block names. If in doubt, use `/project-reviewer` and `/domain-modeling`.
+3. Resolve it — **zoom as needed**: fetch the full body of any related or closed ticket on demand; invoke the skills the `## Notes` block names. If in doubt, use the `grilling` and `domain-modeling` skills.
    _Done when_: the ticket's question has an answer the user has agreed to (HITL) or the investigation is complete and written up (AFK).
 4. Record the resolution: post the answer as a **resolution comment**, **close** the issue, and **append a context pointer** to the map's Decisions-so-far.
+   On an AFK ticket nobody agreed to the answer, so the comment carries a **ruling** line (format in [MAP-FORMAT.md](MAP-FORMAT.md)) for the human to overturn.
    On a HITL ticket, carry anything the human typed into a question's **notes** or **Other** field into the answer **verbatim** rather than paraphrasing it — that free text is where the binding constraint usually arrives, and a later session cannot re-derive it. It is also where an out-of-scope signal most often shows up; see step 5.
 5. Add newly-surfaced tickets (create-then-wire); graduate any fog the answer has made specifiable, clearing each graduated patch from **Not yet specified** so it lives only as its new ticket. If the answer reveals a ticket — this one or another — sits beyond the destination, **rule it out of scope** rather than resolving it on the route. If the decision invalidates other parts of the map, update or delete those tickets.
 

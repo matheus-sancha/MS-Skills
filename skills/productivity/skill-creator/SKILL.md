@@ -1,11 +1,13 @@
 ---
 name: skill-creator
-description: Reference for writing and editing skills well — the vocabulary and principles that make a skill predictable. Use whenever authoring, editing, or reviewing a SKILL.md, or deciding a skill's trigger description, invocation mode, or file structure.
+description: Vocabulary and principles for writing documents an agent consumes. Use when creating, editing, or reviewing a skill, or modifying CLAUDE.md or AGENTS.md.
 ---
 
 A skill exists to wrangle determinism out of a stochastic system. **Predictability** — the agent taking the same _process_ every run, not producing the same output — is the root virtue; every lever below serves it.
 
-**Bold terms** are defined in [`GLOSSARY.md`](GLOSSARY.md); look them up there for the full meaning.
+**Bold terms** are defined in [`GLOSSARY.md`](GLOSSARY.md); look them up there for the full meaning. The same levers apply to a `CLAUDE.md` / `AGENTS.md`: only the packaging differs.
+
+Before shipping guidance meant to change behaviour, read [`TESTING.md`](TESTING.md) and test the wording against a no-guidance control.
 
 ## Invocation
 
@@ -23,8 +25,9 @@ When user-invoked skills multiply past what you can remember, that piled-up cogn
 A model-invoked **description** does two jobs — state what the skill is, and list the **branches** that should trigger it. Every word increases **context load**, so a description earns even harder pruning than the body:
 
 - **Front-load the skill's leading word** — the description is where it does its invocation work.
-- **One trigger per branch.** Synonyms that rename a single branch are **duplication** — "build features using TDD … asks for test-first development" is one branch written twice. Collapse them; keep only genuinely distinct branches.
+- **One trigger per branch.** Synonyms that rename a single branch are **duplication** — "diagnose a hard bug … asks to debug something broken" is one branch written twice. Collapse them; keep only genuinely distinct branches.
 - **Cut identity that's already in the body.** Keep the description to triggers, plus any "when another skill needs…" reach clause.
+- **Triggers, never the workflow.** An agent that reads a summary of the steps follows the summary and skips the skill. Say _when_ to reach; leave _how_ to the body.
 
 ## Information hierarchy
 
@@ -47,11 +50,13 @@ Where the ladder decides _how far down_ a piece sits, **co-location** decides _w
 **Granularity** is how finely you divide skills, and each cut spends one of the two loads, so split only when the cut earns it. Two cuts:
 
 - **By invocation** — split off a **model-invoked** skill when you have a distinct **leading word** that should trigger it on its own, or another skill must reach it. You pay **context load** for the new always-loaded **description**, so that independent reach has to be worth it.
-- **By sequence** — split a run of **steps** when the steps still ahead (a step's **post-completion steps**) tempt the agent to rush the one in front of it (**premature completion**). Keeping them out of view encourages the agent to do more **legwork** on the current task.
+- **By sequence** — split a run of **steps** when the steps still ahead (a step's **post-completion steps**) tempt the agent to rush the one in front of it (**premature completion**). Keeping them out of view encourages the agent to do more **legwork** on the current task. Hiding needs a real context boundary — a user-invoked hand-off or a subagent dispatch; an inline call to another skill leaves the later steps in context and hides nothing.
 
 ## Pruning
 
 Keep each meaning in a **single source of truth**: one authoritative place, so changing the behaviour is a one-place edit.
+
+The **environment** is a source of truth too — pubspec scripts, config files, the directory layout, `--help` output. A document that restates what the agent can find by looking is a **cache**, and caches go stale. Cache only what looking cannot find: the unwritten convention, the reason behind a choice, the gotcha no config admits.
 
 Check every line for **relevance**: does it still bear on what the skill does?
 
@@ -78,4 +83,5 @@ Use these to diagnose issues the user may be having with the skill.
 - **Duplication** — the same meaning in more than one place. Costs maintenance and tokens, and inflates a meaning's prominence on the ladder past its real rank.
 - **Sediment** — stale layers that settle because adding feels safe and removing feels risky. The default fate of any skill without a pruning discipline.
 - **Sprawl** — a skill simply too long, even when every line is live and unique. Hurts readability and maintainability and wastes tokens. The cure is the ladder: disclose **reference** behind pointers, and split by **branch** or sequence so each path carries only what it needs.
+- **Negation** — steering by prohibition. "Don't X" puts X in context and makes it more available, not less. Prompt the positive: name the target behaviour ("write one-line comments") so the banned one is never spoken. Keep a prohibition only as a hard guardrail with no positive phrasing, and pair it with the target.
 - **No-op** — a line the model already obeys by default, so you pay load to say nothing. The test: does it change behaviour versus the default? A weak leading word (_be thorough_ when the agent is already thorough-ish) is a no-op; the fix is a stronger word (_relentless_), not a different technique.

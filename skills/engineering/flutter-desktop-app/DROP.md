@@ -45,4 +45,4 @@ No installer, no store, no code signing. Users unzip a new version over the old 
 
 ## Tagging
 
-`previa/<label>`, or whatever prefix names the channel. The label is what a user says out loud; the tag is what turns it back into code. Tag the commit you packaged, immediately after packaging it.
+`preview/<label>` — the prefix names the channel the drop went out on, in whatever word the project uses for it. The label is what a user says out loud; the tag is what turns it back into code. Tag the commit you packaged, immediately after packaging it.

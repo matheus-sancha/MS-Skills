@@ -18,19 +18,19 @@ How a skill is reached — and the two loads you pay for the choice.
 
 ### Model-Invoked
 
-A skill that keeps its **description** field, so the agent can see it and fire it autonomously — and the human can still type its name, so model-invocation always _includes_ user reach. There is no model-only state: a description only ever _adds_ agent discovery, never removes the human's. Pays a permanent **context load** on every turn in exchange for that discoverability. Reachable by other skills, because the description that makes it agent-discoverable makes it invocable. A model-invoked skill whose content is all **reference** is also one home for shared reference: another skill can invoke it, so reference needed by several skills lives in one place. Pick model-invocation only when the agent must reach the skill on its own; if it never fires except by hand, drop the description and pay no context load.
+A skill whose **description** is loaded into the agent's context, so the agent can see it and fire it autonomously — and the human can still type its name, so model-invocation always _includes_ user reach. There is no model-only state: a loaded description only ever _adds_ agent discovery, never removes the human's. The default: leave `disable-model-invocation` unset. Pays a permanent **context load** on every turn in exchange for that discoverability. Reachable by other skills, because the description that makes it agent-discoverable makes it invocable. A model-invoked skill whose content is all **reference** is also one home for shared reference: another skill can invoke it, so reference needed by several skills lives in one place. Pick model-invocation only when the agent must reach the skill on its own; if it never fires except by hand, make it **user-invoked** and pay no context load.
 
 _Avoid_: ability, tool, capability
 
 ### User-Invoked
 
-A skill with its **description** stripped — invisible to the agent and reachable only by the human typing its name (user-_only_, where **model-invoked** is user-_and-agent_). Trades agent-discoverability for zero **context load**. Because it has no description, nothing but the human can reach it: no other skill can fire it.
+A skill with `disable-model-invocation: true` — its **description** is withheld from the agent's context, so it is invisible to the agent and reachable only by the human typing its name (user-_only_, where **model-invoked** is user-_and-agent_). Trades agent-discoverability for zero **context load**. Because the agent never sees the description, nothing but the human can reach it: no other skill can fire it. The description stays in the file as a one-line summary for the human's skill list.
 
 _Avoid_: procedure, workflow, command
 
 ### Description
 
-The skill's machine-readable trigger, and the one **context pointer** a **model-invoked** skill is forced to keep loaded at all times. Its mere presence _is_ the invocation axis: keep it and the skill is model-invoked (and reachable by other skills); delete it and the skill is **user-invoked**, reachable only by the human. The source of a model-invoked skill's **context load**.
+The skill's machine-readable trigger, and the one **context pointer** a **model-invoked** skill is forced to keep loaded at all times. Whether the agent sees it _is_ the invocation axis: loaded, the skill is model-invoked (and reachable by other skills); withheld by `disable-model-invocation: true`, the skill is **user-invoked** and the description is only a human-facing one-liner, trigger lists stripped. The source of a model-invoked skill's **context load**. It states _when_ to reach the skill, never _how_ the skill works: an agent given a workflow summary follows the summary and never reads the body.
 
 _Avoid_: frontmatter, summary
 
@@ -42,7 +42,7 @@ _Avoid_: link, reference, import
 
 ### Context Load
 
-The cost a **model-invoked** skill imposes on the agent's context window — its **description**, always loaded, spending both tokens and attention. What **user-invoked** skills escape by having no description, and the brake on splitting into more model-invoked skills.
+The cost a **model-invoked** skill imposes on the agent's context window — its **description**, always loaded, spending both tokens and attention. What **user-invoked** skills escape by keeping their description out of the window, and the brake on splitting into more model-invoked skills.
 
 _Avoid_: token cost, context bloat
 
@@ -54,7 +54,7 @@ _Avoid_: human index, burden, overhead
 
 ### Router Skill
 
-A **user-invoked** skill whose job is to point at your other user-invoked skills — naming each and when to reach for it — so the human has one skill to remember instead of many. It can only hint, never fire them: user-invoked skills have no **description**, so nothing but the human can reach them. The cure for **cognitive load** when user-invoked skills multiply.
+A **user-invoked** skill whose job is to point at your other user-invoked skills — naming each and when to reach for it — so the human has one skill to remember instead of many. It can only hint, never fire them: the agent never sees a user-invoked skill's **description**, so nothing but the human can reach them. The cure for **cognitive load** when user-invoked skills multiply.
 
 _Avoid_: dispatcher, menu, registry, index, router procedure
 
@@ -82,7 +82,7 @@ _Avoid_: structure, organization, layout
 
 ### Steps
 
-The ordered actions the agent performs — when a skill has them, the primary tier of its content, and the part that earns its place in SKILL.md. Not every skill has steps: a skill can be all steps (`tdd`), all **reference** (a review), or both, independent of invocation. Every step ends on a **completion criterion**, clear or vague.
+The ordered actions the agent performs — when a skill has them, the primary tier of its content, and the part that earns its place in SKILL.md. Not every skill has steps: a skill can be all steps (`resume`), all **reference** (`skill-creator` itself), or both, independent of invocation. Every step ends on a **completion criterion**, clear or vague.
 
 _Avoid_: workflow, instructions, choreography
 
@@ -94,7 +94,7 @@ _Avoid_: supporting material, docs, background
 
 ### External Reference
 
-**Reference** that lives outside the skill system — a plain file, no **description**, no **steps**, not invocable — that any skill can point at. The home for shared reference that needn't fire on its own, and the only shared home two **user-invoked** skills can use, since neither has a description and so neither can fire the other.
+**Reference** that lives outside the skill system — a plain file, no **description**, no **steps**, not invocable — that any skill can point at. The home for shared reference that needn't fire on its own, and the only shared home two **user-invoked** skills can use, since the agent sees neither's description and so neither can fire the other.
 
 _Avoid_: doc, resource, knowledge base
 
@@ -146,6 +146,12 @@ The work an agent does behind the scenes within a single step — reading files,
 
 _Avoid_: scope, effort, diligence, coverage
 
+### Negation
+
+_Failure mode._ Steering by prohibition. Naming the forbidden behaviour drags it into context, where the strongly activated concept overruns the weak "don't" — the ban half-reads as an instruction. The cure is the positive: state the target behaviour so the banned one is never spoken. A prohibition earns its place only as a hard guardrail that has no positive phrasing, and even then sits beside the target so attention lands on what to do. The inverse of a **leading word**: both work by activation, one on purpose.
+
+_Avoid_: anti-pattern list, don'ts, guardrail
+
 ### Post-Completion Steps
 
 The **steps** that follow the current step. Visible, they pull the agent forward into **premature completion** — the more it sees, the stronger the tug; the defence is to hide them by splitting the sequence of steps into two.
@@ -167,6 +173,12 @@ Keeping a skill lean — each remedy paired with the failure it cures.
 The desired state where each meaning lives in exactly one authoritative place, so a change to the skill's behaviour is a change in one place. **Duplication** is its violation.
 
 _Avoid_: home, canonical location
+
+### Cache
+
+A passage that restates what the agent could find by looking — the environment (config files, scripts, directory layout, `--help` output) is itself a **single source of truth**, and the copy goes stale while the original cannot. A cache earns its load only when the lookup is expensive or impossible: the unwritten convention, the reason behind a choice, the gotcha no config admits. A stale cache is the fast road to lost **relevance**.
+
+_Avoid_: project overview, recap, summary of the codebase
 
 ### Duplication
 
@@ -190,6 +202,6 @@ _Avoid_: accretion, bloat, cruft, rot
 
 _Failure mode._ An instruction that changes nothing because the model already does it by default — you pay load to tell the agent what it would do anyway. The test: does a line change behaviour versus the default? A line can be perfectly **relevant** and still be a no-op. The same priors that make a **leading word** free make a no-op worthless.
 
-A leading word is a _technique_; No-Op is a _verdict_ on a line — and they cross. A leading word too weak to beat the default is a no-op (_be thorough_ when the agent is already thorough-ish), and the fix is a stronger word that passes the verdict (_relentless_), not a different technique. So the No-Op test — does it change behaviour versus the default? — is also how you grade whether a leading word is earning its repetitions. This is model-relative, not reader-relative: two people disagreeing over whether a line is a no-op disagree about the default, and settle it by running the skill, not by debate.
+A leading word is a _technique_; No-Op is a _verdict_ on a line — and they cross. A leading word too weak to beat the default is a no-op (_be thorough_ when the agent is already thorough-ish), and the fix is a stronger word that passes the verdict (_relentless_), not a different technique. So the No-Op test — does it change behaviour versus the default? — is also how you grade whether a leading word is earning its repetitions. This is model-relative, not reader-relative: two people disagreeing over whether a line is a no-op disagree about the default, and settle it by running the skill, not by debate — the protocol is in [`TESTING.md`](TESTING.md).
 
 _Avoid_: redundant instruction, restating the obvious, belaboring

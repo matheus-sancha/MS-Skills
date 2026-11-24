@@ -4,7 +4,7 @@ Goal: one token file drives both themes; the stock-M3 tells are all corrected. R
 
 ## 1. Tokens in plain Dart
 
-Keep tokens as `const` with no Flutter imports beyond `dart:ui`/`material` for `Color`. They are data, not widgets.
+Keep tokens as `const`, importing only `package:flutter/material.dart` (for `Color`, `Curves`). They are data, not widgets.
 
 ```dart
 /// Spacing — 8-dp rhythm, 4 for tight pairs. The only gaps allowed in the app.
@@ -106,3 +106,28 @@ Correct every one of these; each is an `AUDIT.md` line:
 ## 5. The type ramp
 
 Build the ramp from a ~1.2 ratio mapped onto M3 roles, so `Theme.of(context).textTheme.titleLarge` etc. carry the scale. Hierarchy comes from **size + weight + colour** (`onSurface` vs `onSurfaceVariant`), not from inventing sizes at call sites. Never hardcode `fontSize:` in a widget — if a role is missing, add it to the ramp.
+
+`copyWith` on each role keeps the scheme's colours and M3 line heights; only size and weight are ours.
+
+```dart
+/// 12 · 14 · 16 · 20 · 24 · 28 · 34 — two weights only.
+TextTheme _typeRamp(TextTheme base) {
+  const regular = FontWeight.w400, strong = FontWeight.w600;
+  return base.copyWith(
+    displaySmall: base.displaySmall?.copyWith(fontSize: 34, fontWeight: strong),
+    headlineMedium: base.headlineMedium?.copyWith(fontSize: 28, fontWeight: strong),
+    headlineSmall: base.headlineSmall?.copyWith(fontSize: 24, fontWeight: strong),
+    titleLarge: base.titleLarge?.copyWith(fontSize: 20, fontWeight: strong),
+    titleMedium: base.titleMedium?.copyWith(fontSize: 16, fontWeight: strong),
+    titleSmall: base.titleSmall?.copyWith(fontSize: 14, fontWeight: strong),
+    bodyLarge: base.bodyLarge?.copyWith(fontSize: 16, fontWeight: regular),
+    bodyMedium: base.bodyMedium?.copyWith(fontSize: 14, fontWeight: regular),
+    bodySmall: base.bodySmall?.copyWith(fontSize: 12, fontWeight: regular),
+    labelLarge: base.labelLarge?.copyWith(fontSize: 14, fontWeight: strong),
+    labelMedium: base.labelMedium?.copyWith(fontSize: 12, fontWeight: strong),
+    labelSmall: base.labelSmall?.copyWith(fontSize: 12, fontWeight: regular),
+  );
+}
+```
+
+With `google_fonts`, wrap the result: `GoogleFonts.interTextTheme(_typeRamp(base.textTheme))`.

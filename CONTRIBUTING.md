@@ -11,8 +11,7 @@ skills/
 └── engineering/
 │   └── my-skill/
 │       ├── SKILL.md           # Required
-│       └── references/        # Optional: supporting docs Claude can read
-│           └── some-guide.md
+│       └── FORMATS.md         # Optional: reference file, UPPERCASE, next to SKILL.md
 └── productivity/
     └── my-other-skill/
         └── SKILL.md
@@ -26,7 +25,7 @@ Current categories: `engineering`, `productivity`, `vendor`. Add a new category 
 Two directories are deliberately **outside** `skills/`, because everything under
 `skills/` gets installed as a live skill:
 
-- `templates/` — starting points to copy, not skills to run.
+- `templates/` — the worked example of a skill, not a skill to run.
 - `docs/` — guidance for humans writing skills.
 
 ## Skill format
@@ -36,20 +35,20 @@ Two directories are deliberately **outside** `skills/`, because everything under
 ```yaml
 ---
 name: my-skill                  # Required — kebab-case, must match directory name
-description: ...                # Required for model-invoked skills (omit if user-invoked)
-version: 1.0.0                  # Recommended
-license: MIT                    # Recommended for public skills
-disable-model-invocation: true  # Optional — set to prevent Claude from auto-invoking
+description: ...                # Required — triggers if model-invoked, a one-line summary if slash-only
+disable-model-invocation: true  # Optional — makes the skill slash-only
 argument-hint: "..."            # Optional — shown when the user types the skill name
 ---
 ```
+
+No `version` or `license` field: the repo-level `LICENSE` (MIT) covers every skill.
 
 The body is plain Markdown written as instructions to Claude — imperative, specific, and focused on one task. See [docs/authoring-guide.md](./docs/authoring-guide.md) for writing guidance and [docs/trigger-writing-tips.md](./docs/trigger-writing-tips.md) for description best practices.
 
 ### Model-invoked vs user-invoked
 
-- **Model-invoked** (default): include a `description:` — Claude can fire the skill automatically based on context, and other skills can reach it by name. The description adds to context load every turn, so keep it tight.
-- **User-invoked**: set `disable-model-invocation: true` — only fires when the user types `/<skill-name>`. Zero context load, but the user must remember it exists.
+- **Model-invoked** (default): the `description:` is the trigger — Claude can fire the skill automatically based on context, and other skills can reach it by name. The description adds to context load every turn, so keep it tight.
+- **User-invoked** (slash-only): set `disable-model-invocation: true` — only fires when the user types its name. Keep a short `description:` for the human's skill list; Claude never sees it, so it costs no context load, but the user must remember the skill exists.
 
 See [skills/productivity/skill-creator/SKILL.md](./skills/productivity/skill-creator/SKILL.md) for the full reference on this decision.
 
@@ -65,7 +64,11 @@ See [skills/productivity/skill-creator/SKILL.md](./skills/productivity/skill-cre
 bash scripts/new-skill.sh
 ```
 
-Prompts for a category, name, and description, then creates the directory and `SKILL.md`.
+Prompts for a category, name, invocation mode, and description, then creates `skills/<category>/<skill-name>/SKILL.md` — a bare skeleton — and prints the registration steps.
+
+For what a finished skill looks like, read [templates/example-skill/](./templates/example-skill/): the worked example, with a sibling reference file. Copying it into `skills/<category>/` by hand is equivalent to running the script; its own steps walk you through the rest.
+
+Refer to another skill by name ("the `research` skill"), never as a bare slash command: the command differs between a plugin install (`/ms-skills:research`) and a symlink (`/research`).
 
 ## Scripts reference
 
@@ -89,7 +92,8 @@ Checks that every `SKILL.md` has the required fields, that directory names match
 
 - [ ] Skill is in the right category under `skills/<category>/<skill-name>/`
 - [ ] Directory name matches `name:` in frontmatter
-- [ ] `description:` is present (or `disable-model-invocation: true` is set intentionally)
+- [ ] `description:` is present — triggers for a model-invoked skill, a one-line summary for a slash-only one
+- [ ] Reference files are UPPERCASE siblings of `SKILL.md`; other skills are referenced by name
 - [ ] Skill path added to `"skills"` in `.claude-plugin/plugin.json`
 - [ ] `bash scripts/validate.sh` passes locally
 - [ ] `README.md` skills table updated with the new entry

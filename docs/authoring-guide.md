@@ -1,45 +1,51 @@
 # Skill Authoring Guide
 
-This guide covers how to write Claude Code skills that are clear, focused, and reliably invoked.
+The mechanics of a skill in this repo. The principles — what makes a skill predictable — live in the [`skill-creator`](../skills/productivity/skill-creator/SKILL.md) skill; this guide does not repeat them.
 
 ## Frontmatter reference
 
 | Field | Required | Notes |
 |---|---|---|
-| `name` | Yes | Kebab-case; must match the directory name exactly |
-| `description` | Yes | One or two sentences; Claude reads this to decide when to invoke the skill |
-| `version` | Recommended | Semantic version (e.g. `1.0.0`) |
-| `license` | Recommended | `MIT` for public skills |
+| `name` | Yes | Kebab-case; identical to the directory name |
+| `description` | Yes | Model-invoked: the trigger the agent reads to decide when to fire the skill. Slash-only: a short human-facing summary |
+| `disable-model-invocation` | No | `true` makes the skill slash-only: the agent never sees the description, so only the user can invoke it |
+| `argument-hint` | No | Shown after the skill name when the user types it |
+
+Nothing else. Skills carry no `version` or `license` field; the repo-level `LICENSE` (MIT) covers them all.
+
+See [trigger-writing-tips.md](./trigger-writing-tips.md) for the description.
 
 ## Writing the skill body
 
-The body is instructions to Claude. Write in imperative, second-person voice:
+The body is instructions to the agent. Write them imperatively:
 
 **Do:**
-> Search the current directory for all `.test.ts` files. For each file, check that it imports from `@testing-library/react`. Report any that don't.
+> Find every `_test.dart` file under `test/`. For each, check that it calls `testWidgets` or `test`. Report any that don't.
 
 **Avoid:**
-> This skill helps with testing files. It can look at TypeScript files and check imports.
+> This skill helps with test files. It can look at Dart files and check them.
 
-### Structural tips
+- **One skill, one job.** Split a skill that does two unrelated things.
+- **End each step on a checkable "done when".** A vague finish line invites stopping early.
+- **State the output's shape.** A list, a table, a file at a named path.
+- **Say what to do, not what to avoid.** Naming the unwanted behaviour brings it into context.
+- **Leave out what the agent can find by looking.** Scripts, config, and directory layout are already in the repo; write down only what they don't say.
 
-- **One skill, one job.** If a skill does two unrelated things, split it.
-- **Be specific about output.** Tell Claude exactly what to produce — a list, a summary, a code block, etc.
-- **Reference supporting docs** in `references/` for large tables, config schemas, or anything that would clutter the main instructions.
-- **Use headers** to break multi-step instructions into named stages. Claude follows them in order.
+## Reference files
 
-## When to use `references/`
+Material only some runs need — a format, a glossary, a checklist for one case — goes in an UPPERCASE `.md` file next to `SKILL.md`, linked from the step that needs it:
 
-Add a `references/` subdirectory when your skill needs lookup material that isn't instructions — for example:
+```
+skills/engineering/prototype/
+├── SKILL.md
+├── LOGIC.md
+└── UI.md
+```
 
-- An API reference table the skill needs to consult
-- A configuration schema with many fields
-- A troubleshooting guide the skill should surface conditionally
-
-Keep each reference file focused on one topic. Name them descriptively (`api-reference.md`, `config-options.md`).
+One topic per file, named for what it holds. No `references/` subfolder.
 
 ## Testing your skill
 
-1. Run `bash scripts/validate.sh` — catches missing frontmatter.
-2. Install the skill locally and invoke it manually to verify behavior.
-3. Test the edge cases mentioned in the description.
+1. Run `bash scripts/validate.sh` — checks frontmatter, name/directory match, and `.claude-plugin/plugin.json`.
+2. Link the skill locally (`scripts/link-skills.ps1` on Windows, `scripts/link-skills.sh` elsewhere) and invoke it.
+3. For wording meant to change behaviour, follow [`TESTING.md`](../skills/productivity/skill-creator/TESTING.md): compare against a run without the guidance.
