@@ -17,8 +17,12 @@ Match what the user is trying to do to a skill below, name it, and say where on 
 4. **`to-tickets`** — cut the spec into tracer-bullet tickets with blocked-by edges.
 5. **`implement`** — build one ticket per fresh session, test-first.
 6. **`review-changes`** — two-axis review of the diff: Standards and Spec. `implement` runs it; run it alone on any branch or PR.
+7. **`update-docs`** — fix exactly the README and docs the diff made untrue, on the same branch.
+8. **`open-pr`** — open the pull request with evidence in the body.
 
-**Small enough for one session?** Skip 3–4: `grilling`, then `implement` in the same window.
+**`ship`** runs 5–8 for one ticket in one session, with a gate between each.
+
+**Small enough for one session?** Skip 3–4: `grilling`, then `implement` or `ship` in the same window.
 
 **Context**: keep steps 1–4 in one unbroken session so spec and tickets build on the grilling itself, not a summary. Each `implement` starts fresh from its ticket. See [Phase boundaries](#phase-boundaries).
 

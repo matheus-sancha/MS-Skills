@@ -75,12 +75,15 @@ invoked by the model when the context matches.
 | [flutter-ui-design](./skills/engineering/flutter-ui-design/) | Design and audit beautiful, adaptive Flutter UI — tokens, M3 anti-defaults, proportions, navigation, app flow |
 | [implement](./skills/engineering/implement/) | `slash-only` — build one ticket test-first: checks run, review done, evidence shown |
 | [lean-code-reviewer](./skills/engineering/lean-code-reviewer/) | Review a codebase for waste, redundancy, and AI slop |
+| [open-pr](./skills/engineering/open-pr/) | Open a pull request whose body carries the evidence — template included |
 | [prototype](./skills/engineering/prototype/) | Build a throwaway prototype to flesh out a design (logic terminal app or UI variations) |
 | [resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/) | Resolve an in-progress merge or rebase by each side's intent |
 | [review-changes](./skills/engineering/review-changes/) | Review a diff on two axes — repo standards, and fidelity to the originating spec |
+| [ship](./skills/engineering/ship/) | `slash-only` — one ticket from build to open PR: implement, review, docs, PR |
 | [test-strategy](./skills/engineering/test-strategy/) | Decide what deserves a test and which seam to write it at |
 | [to-spec](./skills/engineering/to-spec/) | Turn decisions made in the conversation into a spec issue on GitHub |
 | [to-tickets](./skills/engineering/to-tickets/) | `slash-only` — split a spec into vertical-slice tickets with blocking links |
+| [update-docs](./skills/engineering/update-docs/) | Fix exactly the README and docs a branch or PR made untrue |
 
 ### Productivity
 
@@ -96,7 +99,8 @@ invoked by the model when the context matches.
 | [which-skill](./skills/productivity/which-skill/) | `slash-only` — router: which skill or flow fits what you're trying to do |
 
 The main flow runs `grilling` → `prototype` (optional) → `to-spec` →
-`to-tickets` → `implement` → `review-changes`; `which-skill` routes you onto it.
+`to-tickets` → `implement` → `review-changes` → `update-docs` → `open-pr`;
+`ship` runs the last four for one ticket, and `which-skill` routes you onto the flow.
 
 Three review skills exist and the boundary between them is **scope**:
 `review-changes` reviews a diff, `lean-code-reviewer` reviews a whole codebase,
@@ -104,7 +108,7 @@ and the built-in `/code-review` hunts bugs.
 
 Many of these are adapted from [Matt Pocock's skills](https://github.com/mattpocock/skills)
 (MIT) — `codebase-design`, `diagnosing-bugs`, `domain-modeling`, `grilling`,
-`handoff`, `implement`, `prototype`, `research`, `resolving-merge-conflicts`,
+`handoff`, `implement`, `open-pr`, `prototype`, `research`, `resolving-merge-conflicts`,
 `review-changes`, `teach`, `to-spec`, `to-tickets`, `wayfinder`, and
 `which-skill` — rewritten to depend only on skills in this repo and to target
 GitHub Issues directly. A few techniques in `diagnosing-bugs`, `test-strategy`,
@@ -141,12 +145,15 @@ MS-Skills/
 │   │   ├── flutter-ui-design/
 │   │   ├── implement/
 │   │   ├── lean-code-reviewer/
+│   │   ├── open-pr/
 │   │   ├── prototype/
 │   │   ├── resolving-merge-conflicts/
 │   │   ├── review-changes/
+│   │   ├── ship/
 │   │   ├── test-strategy/
 │   │   ├── to-spec/
-│   │   └── to-tickets/
+│   │   ├── to-tickets/
+│   │   └── update-docs/
 │   ├── productivity/
 │   │   ├── grilling/
 │   │   ├── handoff/
